@@ -9,6 +9,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     on<AgeSelected>(_onAgeSelected);
     on<ConcernSelected>(_onConcernSelected);
     on<ResetApp>(_onResetApp);
+    on<SetViewMode>(_onSetViewMode);
   }
 
   void _onLanguageSelected(LanguageSelected event, Emitter<AppState> emit) {
@@ -56,5 +57,9 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   void _onResetApp(ResetApp event, Emitter<AppState> emit) {
     emit(const AppState());
+  }
+
+  void _onSetViewMode(SetViewMode event, Emitter<AppState> emit) {
+    emit(state.copyWith(viewMode: event.viewMode));
   }
 }

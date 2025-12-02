@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_web_test/l10n/app_localizations.dart';
 import '../bloc/app_bloc.dart';
 import '../bloc/app_event.dart';
 import '../bloc/app_state.dart';
@@ -32,12 +33,14 @@ class SelectionStep extends StatelessWidget {
 class _LanguageSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Column(
       children: [
         _ProgressIndicator(currentIndex: 0),
         const SizedBox(height: 40),
         FpText(
-          '언어를 선택하세요',
+          l10n.selectLanguage,
           fontSize: 28,
           fontWeight: FontWeight.bold,
           color: Colors.black87,
@@ -53,25 +56,21 @@ class _LanguageSelection extends StatelessWidget {
             children: [
               _LanguageButton(
                 language: Language.korean,
-                label: '한국어',
                 color: FpColor.green,
                 flag: '🇰🇷',
               ),
               _LanguageButton(
                 language: Language.english,
-                label: 'English',
                 color: FpColor.blue,
                 flag: '🇺🇸',
               ),
               _LanguageButton(
                 language: Language.japanese,
-                label: '日本語',
                 color: FpColor.red,
                 flag: '🇯🇵',
               ),
               _LanguageButton(
                 language: Language.chinese,
-                label: '中文',
                 color: FpColor.yellow,
                 flag: '🇨🇳',
               ),
@@ -85,19 +84,34 @@ class _LanguageSelection extends StatelessWidget {
 
 class _LanguageButton extends StatelessWidget {
   final Language language;
-  final String label;
   final Color color;
   final String flag;
 
   const _LanguageButton({
     required this.language,
-    required this.label,
     required this.color,
     required this.flag,
   });
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    String label;
+    switch (language) {
+      case Language.korean:
+        label = l10n.languageKorean;
+        break;
+      case Language.english:
+        label = l10n.languageEnglish;
+        break;
+      case Language.japanese:
+        label = l10n.languageJapanese;
+        break;
+      case Language.chinese:
+        label = l10n.languageChinese;
+        break;
+    }
+    
     return ElevatedButton(
       onPressed: () {
         context.read<AppBloc>().add(LanguageSelected(language));
@@ -130,12 +144,14 @@ class _LanguageButton extends StatelessWidget {
 class _GenderSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Column(
       children: [
         _ProgressIndicator(currentIndex: 1),
         const SizedBox(height: 40),
         FpText(
-          '성별을 선택하세요',
+          l10n.selectGender,
           fontSize: 28,
           fontWeight: FontWeight.bold,
           color: Colors.black87,
@@ -146,15 +162,9 @@ class _GenderSelection extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _GenderButton(
-                  gender: Gender.female,
-                  label: '여성',
-                ),
+                _GenderButton(gender: Gender.female),
                 const SizedBox(width: 24),
-                _GenderButton(
-                  gender: Gender.male,
-                  label: '남성',
-                ),
+                _GenderButton(gender: Gender.male),
               ],
             ),
           ),
@@ -166,15 +176,14 @@ class _GenderSelection extends StatelessWidget {
 
 class _GenderButton extends StatelessWidget {
   final Gender gender;
-  final String label;
 
-  const _GenderButton({
-    required this.gender,
-    required this.label,
-  });
+  const _GenderButton({required this.gender});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final label = gender == Gender.male ? l10n.genderMale : l10n.genderFemale;
+    
     return SizedBox(
       width: 200,
       height: 120,
@@ -204,12 +213,14 @@ class _GenderButton extends StatelessWidget {
 class _AgeSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Column(
       children: [
         _ProgressIndicator(currentIndex: 2),
         const SizedBox(height: 40),
         FpText(
-          '연령대를 선택하세요',
+          l10n.selectAge,
           fontSize: 28,
           fontWeight: FontWeight.bold,
           color: Colors.black87,
@@ -223,11 +234,11 @@ class _AgeSelection extends StatelessWidget {
             padding: const EdgeInsets.all(24),
             childAspectRatio: 1.2,
             children: [
-              _AgeButton(ageGroup: AgeGroup.teens, label: '10대'),
-              _AgeButton(ageGroup: AgeGroup.twenties, label: '20대'),
-              _AgeButton(ageGroup: AgeGroup.thirties, label: '30대'),
-              _AgeButton(ageGroup: AgeGroup.forties, label: '40대'),
-              _AgeButton(ageGroup: AgeGroup.fiftiesPlus, label: '50대+'),
+              _AgeButton(ageGroup: AgeGroup.teens),
+              _AgeButton(ageGroup: AgeGroup.twenties),
+              _AgeButton(ageGroup: AgeGroup.thirties),
+              _AgeButton(ageGroup: AgeGroup.forties),
+              _AgeButton(ageGroup: AgeGroup.fiftiesPlus),
             ],
           ),
         ),
@@ -238,15 +249,31 @@ class _AgeSelection extends StatelessWidget {
 
 class _AgeButton extends StatelessWidget {
   final AgeGroup ageGroup;
-  final String label;
 
-  const _AgeButton({
-    required this.ageGroup,
-    required this.label,
-  });
+  const _AgeButton({required this.ageGroup});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    String label;
+    switch (ageGroup) {
+      case AgeGroup.teens:
+        label = l10n.ageTeens;
+        break;
+      case AgeGroup.twenties:
+        label = l10n.ageTwenties;
+        break;
+      case AgeGroup.thirties:
+        label = l10n.ageThirties;
+        break;
+      case AgeGroup.forties:
+        label = l10n.ageForties;
+        break;
+      case AgeGroup.fiftiesPlus:
+        label = l10n.ageFiftiesPlus;
+        break;
+    }
+    
     return ElevatedButton(
       onPressed: () {
         context.read<AppBloc>().add(AgeSelected(ageGroup));
@@ -272,12 +299,14 @@ class _AgeButton extends StatelessWidget {
 class _ConcernSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Column(
       children: [
         _ProgressIndicator(currentIndex: 3),
         const SizedBox(height: 40),
         FpText(
-          '관심사를 선택하세요',
+          l10n.selectConcern,
           fontSize: 28,
           fontWeight: FontWeight.bold,
           color: Colors.black87,
@@ -291,12 +320,12 @@ class _ConcernSelection extends StatelessWidget {
             padding: const EdgeInsets.all(24),
             childAspectRatio: 1.2,
             children: [
-              _ConcernButton(concern: Concern.immune, label: '면역'),
-              _ConcernButton(concern: Concern.digestive, label: '소화'),
-              _ConcernButton(concern: Concern.joint, label: '관절'),
-              _ConcernButton(concern: Concern.skin, label: '피부'),
-              _ConcernButton(concern: Concern.eye, label: '눈'),
-              _ConcernButton(concern: Concern.energy, label: '에너지'),
+              _ConcernButton(concern: Concern.immune),
+              _ConcernButton(concern: Concern.digestive),
+              _ConcernButton(concern: Concern.joint),
+              _ConcernButton(concern: Concern.skin),
+              _ConcernButton(concern: Concern.eye),
+              _ConcernButton(concern: Concern.energy),
             ],
           ),
         ),
@@ -307,15 +336,34 @@ class _ConcernSelection extends StatelessWidget {
 
 class _ConcernButton extends StatelessWidget {
   final Concern concern;
-  final String label;
 
-  const _ConcernButton({
-    required this.concern,
-    required this.label,
-  });
+  const _ConcernButton({required this.concern});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    String label;
+    switch (concern) {
+      case Concern.immune:
+        label = l10n.concernImmune;
+        break;
+      case Concern.digestive:
+        label = l10n.concernDigestive;
+        break;
+      case Concern.joint:
+        label = l10n.concernJoint;
+        break;
+      case Concern.skin:
+        label = l10n.concernSkin;
+        break;
+      case Concern.eye:
+        label = l10n.concernEye;
+        break;
+      case Concern.energy:
+        label = l10n.concernEnergy;
+        break;
+    }
+    
     return ElevatedButton(
       onPressed: () {
         context.read<AppBloc>().add(ConcernSelected(concern));

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../models/user_profile.dart';
+import 'app_state.dart';
 
 abstract class AppEvent extends Equatable {
   const AppEvent();
@@ -46,5 +47,14 @@ class ConcernSelected extends AppEvent {
 
 class ResetApp extends AppEvent {
   const ResetApp();
+}
+
+class SetViewMode extends AppEvent {
+  final ViewMode viewMode;
+
+  const SetViewMode(this.viewMode);
+
+  @override
+  List<Object?> get props => [viewMode];
 }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_web_test/l10n/app_localizations.dart';
+import 'dart:html' as html;
 import '../bloc/app_bloc.dart';
 import '../bloc/app_event.dart';
 import '../bloc/app_state.dart';
@@ -16,22 +18,16 @@ class ResultsStep extends StatelessWidget {
       selector: (state) => state.userProfile,
       builder: (context, userProfile) {
         return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: 2,
-            child: _RecommendationsSection(userProfile: userProfile),
+          padding: const EdgeInsets.all(24),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(flex: 2, child: _RecommendationsSection(userProfile: userProfile)),
+              const SizedBox(width: 24),
+              Expanded(flex: 1, child: _ActionsSection(userProfile: userProfile)),
+            ],
           ),
-          const SizedBox(width: 24),
-          Expanded(
-            flex: 1,
-            child: _ActionsSection(),
-          ),
-        ],
-      ),
-    );
+        );
       },
     );
   }
@@ -42,137 +38,130 @@ class _RecommendationsSection extends StatelessWidget {
 
   const _RecommendationsSection({required this.userProfile});
 
-  String _getProfileText() {
-    String text = '넘치는 에너지를 원하는 당신!';
-    if (userProfile.concern == Concern.energy) {
-      text = '넘치는 에너지를 원하는 당신!';
-    } else if (userProfile.concern == Concern.immune) {
-      text = '건강한 면역력을 원하는 당신!';
-    } else if (userProfile.concern == Concern.digestive) {
-      text = '편안한 소화를 원하는 당신!';
-    }
-    return text;
-  }
-
-  String _getLanguageText() {
-    switch (userProfile.language) {
-      case Language.korean:
-        return '한국어';
-      case Language.english:
-        return 'English';
-      case Language.japanese:
-        return '日本語';
-      case Language.chinese:
-        return '中文';
-      default:
-        return '한국어';
-    }
-  }
-
-  String _getGenderText() {
-    switch (userProfile.gender) {
-      case Gender.male:
-        return '남성';
-      case Gender.female:
-        return '여성';
-      default:
-        return '';
-    }
-  }
-
-  String _getAgeText() {
-    switch (userProfile.ageGroup) {
-      case AgeGroup.teens:
-        return '10대';
-      case AgeGroup.twenties:
-        return '20대';
-      case AgeGroup.thirties:
-        return '30대';
-      case AgeGroup.forties:
-        return '40대';
-      case AgeGroup.fiftiesPlus:
-        return '50대+';
-      default:
-        return '';
-    }
-  }
-
-  String _getConcernText() {
-    switch (userProfile.concern) {
-      case Concern.energy:
-        return '에너지';
-      case Concern.immune:
-        return '면역';
-      case Concern.digestive:
-        return '소화';
-      case Concern.joint:
-        return '관절';
-      case Concern.skin:
-        return '피부';
-      case Concern.eye:
-        return '눈';
-      default:
-        return '';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    String profileText = l10n.profileTextEnergy;
+    if (userProfile.concern == Concern.immune) {
+      profileText = l10n.profileTextImmune;
+    } else if (userProfile.concern == Concern.digestive) {
+      profileText = l10n.profileTextDigestive;
+    }
+
+    String languageText = '';
+    if (userProfile.language != null) {
+      switch (userProfile.language!) {
+        case Language.korean:
+          languageText = l10n.languageKorean;
+          break;
+        case Language.english:
+          languageText = l10n.languageEnglish;
+          break;
+        case Language.japanese:
+          languageText = l10n.languageJapanese;
+          break;
+        case Language.chinese:
+          languageText = l10n.languageChinese;
+          break;
+      }
+    }
+
+    String genderText = '';
+    if (userProfile.gender != null) {
+      genderText = userProfile.gender == Gender.male ? l10n.genderMale : l10n.genderFemale;
+    }
+
+    String ageText = '';
+    if (userProfile.ageGroup != null) {
+      switch (userProfile.ageGroup!) {
+        case AgeGroup.teens:
+          ageText = l10n.ageTeens;
+          break;
+        case AgeGroup.twenties:
+          ageText = l10n.ageTwenties;
+          break;
+        case AgeGroup.thirties:
+          ageText = l10n.ageThirties;
+          break;
+        case AgeGroup.forties:
+          ageText = l10n.ageForties;
+          break;
+        case AgeGroup.fiftiesPlus:
+          ageText = l10n.ageFiftiesPlus;
+          break;
+      }
+    }
+
+    String concernText = '';
+    if (userProfile.concern != null) {
+      switch (userProfile.concern!) {
+        case Concern.immune:
+          concernText = l10n.concernImmune;
+          break;
+        case Concern.digestive:
+          concernText = l10n.concernDigestive;
+          break;
+        case Concern.joint:
+          concernText = l10n.concernJoint;
+          break;
+        case Concern.skin:
+          concernText = l10n.concernSkin;
+          break;
+        case Concern.eye:
+          concernText = l10n.concernEye;
+          break;
+        case Concern.energy:
+          concernText = l10n.concernEnergy;
+          break;
+      }
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        FpText(
-          '추천 성분',
-          fontSize: 32,
-          fontWeight: FontWeight.bold,
-          color: Colors.black87,
-        ),
+        FpText(l10n.recommendedIngredients, fontSize: 32, fontWeight: FontWeight.bold, color: Colors.black87),
         const SizedBox(height: 24),
-        FpText(
-          _getProfileText(),
-          fontSize: 20,
-          fontWeight: FontWeight.w500,
-          color: Colors.black87,
-        ),
+        FpText(profileText, fontSize: 20, fontWeight: FontWeight.w500, color: Colors.black87),
         const SizedBox(height: 16),
         Wrap(
           spacing: 8,
           runSpacing: 8,
           children: [
-            _TagChip(_getLanguageText()),
-            if (userProfile.gender != null) _TagChip(_getGenderText()),
-            if (userProfile.ageGroup != null) _TagChip(_getAgeText()),
-            if (userProfile.concern != null) _TagChip(_getConcernText()),
+            if (languageText.isNotEmpty) _TagChip(languageText),
+            if (genderText.isNotEmpty) _TagChip(genderText),
+            if (ageText.isNotEmpty) _TagChip(ageText),
+            if (concernText.isNotEmpty) _TagChip(concernText),
           ],
         ),
         const SizedBox(height: 32),
         Column(
           children: [
             _IngredientCard(
-              title: '비타민 B 복합체',
+              title: l10n.vitaminBComplexTitle,
               icon: '💊',
-              description: '음식을 에너지로 전환하는 비타민 B군입니다',
-              benefits: ['에너지 생산', '신진대사', '정신 명료'],
-              location: '구역 G',
-              shelf: '번 선반 1-5',
+              description: l10n.vitaminBComplexDescription,
+              benefits: [l10n.vitaminBComplexBenefit1, l10n.vitaminBComplexBenefit2, l10n.vitaminBComplexBenefit3],
+              location: '${l10n.area} G',
+              shelf: '${l10n.shelf} 1-5',
             ),
             const SizedBox(height: 16),
             _IngredientCard(
-              title: '코엔자임 Q10',
+              title: l10n.coenzymeQ10Title,
               icon: '❤️',
-              description: '세포 에너지 생산을 돕고 피로를 줄입니다',
-              benefits: ['에너지 증진', '심장 건강', '항산화'],
-              location: '구역 G',
-              shelf: '번 선반 6-9',
+              description: l10n.coenzymeQ10Description,
+              benefits: [l10n.coenzymeQ10Benefit1, l10n.coenzymeQ10Benefit2, l10n.coenzymeQ10Benefit3],
+              location: '${l10n.area} G',
+              shelf: '${l10n.shelf} 6-9',
             ),
             const SizedBox(height: 16),
             _IngredientCard(
-              title: '철분',
+              title: l10n.ironTitle,
               icon: '🩸',
-              description: '산소 운반과 에너지 수준에 필수적인 미네랄입니다',
-              benefits: ['에너지 수준', '산소 운반', '피로 감소'],
-              location: '구역 B',
-              shelf: '번 선반 5-7',
+              description: l10n.ironDescription,
+              benefits: [l10n.ironBenefit1, l10n.ironBenefit2, l10n.ironBenefit3],
+              location: '${l10n.area} B',
+              shelf: '${l10n.shelf} 5-7',
             ),
           ],
         ),
@@ -190,15 +179,8 @@ class _TagChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: FpColor.lightGreen,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: FpText(
-        label,
-        fontSize: 14,
-        color: FpColor.green,
-      ),
+      decoration: BoxDecoration(color: FpColor.lightGreen, borderRadius: BorderRadius.circular(16)),
+      child: FpText(label, fontSize: 14, color: FpColor.green),
     );
   }
 }
@@ -211,14 +193,7 @@ class _IngredientCard extends StatelessWidget {
   final String location;
   final String shelf;
 
-  const _IngredientCard({
-    required this.title,
-    required this.icon,
-    required this.description,
-    required this.benefits,
-    required this.location,
-    required this.shelf,
-  });
+  const _IngredientCard({required this.title, required this.icon, required this.description, required this.benefits, required this.location, required this.shelf});
 
   @override
   Widget build(BuildContext context) {
@@ -227,13 +202,7 @@ class _IngredientCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 2))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -243,60 +212,27 @@ class _IngredientCard extends StatelessWidget {
               FpText(icon, fontSize: 24),
               const SizedBox(width: 12),
               Expanded(
-                child: FpText(
-                  title,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
+                child: FpText(title, fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: FpColor.green,
-                  borderRadius: BorderRadius.circular(8),
-                ),
+                decoration: BoxDecoration(color: FpColor.green, borderRadius: BorderRadius.circular(8)),
                 child: Column(
                   children: [
-                    FpText(
-                      location,
-                      fontSize: 12,
-                      color: Colors.white,
-                    ),
-                    FpText(
-                      shelf,
-                      fontSize: 12,
-                      color: Colors.white,
-                    ),
+                    FpText(location, fontSize: 12, color: Colors.white),
+                    FpText(shelf, fontSize: 12, color: Colors.white),
                   ],
                 ),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          FpText(
-            description,
-            fontSize: 16,
-            color: Colors.black87,
-          ),
+          FpText(description, fontSize: 16, color: Colors.black87),
           const SizedBox(height: 12),
           Container(
             padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: FpColor.lightGreen,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: benefits
-                  .map((benefit) => FpText(
-                        benefit,
-                        fontSize: 14,
-                        color: FpColor.green,
-                      ))
-                  .toList(),
-            ),
+            decoration: BoxDecoration(color: FpColor.lightGreen, borderRadius: BorderRadius.circular(8)),
+            child: Wrap(spacing: 8, runSpacing: 8, children: benefits.map((benefit) => FpText(benefit, fontSize: 14, color: FpColor.green)).toList()),
           ),
         ],
       ),
@@ -305,8 +241,88 @@ class _IngredientCard extends StatelessWidget {
 }
 
 class _ActionsSection extends StatelessWidget {
+  final UserProfile userProfile;
+
+  const _ActionsSection({required this.userProfile});
+
+  String _generateMobileUrl(UserProfile userProfile) {
+    final origin = html.window.location.origin;
+    final pathname = html.window.location.pathname ?? '/';
+    final baseUrl = origin + (pathname.isEmpty ? '/' : pathname);
+    final params = <String, String>{'view': 'mobile'};
+
+    if (userProfile.language != null) {
+      switch (userProfile.language!) {
+        case Language.korean:
+          params['lang'] = 'Korean';
+          break;
+        case Language.english:
+          params['lang'] = 'English';
+          break;
+        case Language.japanese:
+          params['lang'] = 'Japanese';
+          break;
+        case Language.chinese:
+          params['lang'] = 'Chinese';
+          break;
+      }
+    }
+
+    if (userProfile.gender != null) {
+      params['gender'] = userProfile.gender == Gender.male ? 'Male' : 'Female';
+    }
+
+    if (userProfile.ageGroup != null) {
+      switch (userProfile.ageGroup!) {
+        case AgeGroup.teens:
+          params['age'] = '10s';
+          break;
+        case AgeGroup.twenties:
+          params['age'] = '20s';
+          break;
+        case AgeGroup.thirties:
+          params['age'] = '30s';
+          break;
+        case AgeGroup.forties:
+          params['age'] = '40s';
+          break;
+        case AgeGroup.fiftiesPlus:
+          params['age'] = '50s+';
+          break;
+      }
+    }
+
+    if (userProfile.concern != null) {
+      switch (userProfile.concern!) {
+        case Concern.immune:
+          params['concern'] = 'Immune';
+          break;
+        case Concern.digestive:
+          params['concern'] = 'Digestive';
+          break;
+        case Concern.joint:
+          params['concern'] = 'Joint';
+          break;
+        case Concern.skin:
+          params['concern'] = 'Skin';
+          break;
+        case Concern.eye:
+          params['concern'] = 'Eye';
+          break;
+        case Concern.energy:
+          params['concern'] = 'Energy';
+          break;
+      }
+    }
+
+    final queryString = params.entries.map((e) => '${e.key}=${e.value}').join('&');
+    return '$baseUrl?$queryString';
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -318,16 +334,9 @@ class _ActionsSection extends StatelessWidget {
             backgroundColor: FpColor.green,
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
-          child: const FpText(
-            '다시 검색',
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+          child: FpText(l10n.searchAgain, fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         const SizedBox(height: 32),
         Container(
@@ -335,29 +344,14 @@ class _ActionsSection extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
-              ),
-            ],
+            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 2))],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FpText(
-                '정확한 제품이 궁금하다면?',
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
+              FpText(l10n.curiousAboutProduct, fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
               const SizedBox(height: 12),
-              FpText(
-                'QR 코드를 스캔하거나 연락처를 입력하여 상세 제품 정보를 받아보세요',
-                fontSize: 14,
-                color: Colors.black87,
-              ),
+              FpText(l10n.scanQRCode, fontSize: 14, color: Colors.black87),
             ],
           ),
         ),
@@ -367,29 +361,14 @@ class _ActionsSection extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
-              ),
-            ],
+            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 2))],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FpText(
-                '스마트폰에 저장',
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
+              FpText(l10n.saveToSmartphone, fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
               const SizedBox(height: 12),
-              FpText(
-                '이 QR 코드를 스캔하여 모바일에서 맞춤 추천 결과를 확인하세요',
-                fontSize: 14,
-                color: Colors.black87,
-              ),
+              FpText(l10n.scanQRCodeDescription, fontSize: 14, color: Colors.black87),
               const SizedBox(height: 20),
               Center(
                 child: Column(
@@ -398,19 +377,24 @@ class _ActionsSection extends StatelessWidget {
                       width: 200,
                       height: 200,
                       color: Colors.black,
-                      child: const Center(
-                        child: FpText(
-                          'QR Code',
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
+                      child: const Center(child: FpText('QR Code', fontSize: 16, color: Colors.white)),
                     ),
                     const SizedBox(height: 12),
-                    const FpText(
-                      '카메라 앱으로 스캔하세요',
-                      fontSize: 12,
-                      color: Colors.grey,
+                    FpText(l10n.scanWithCamera, fontSize: 12, color: Colors.grey, textAlign: TextAlign.center),
+                    const SizedBox(height: 16),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        final url = _generateMobileUrl(userProfile);
+                        html.window.open(url, '_blank');
+                      },
+                      icon: const Icon(Icons.open_in_new, size: 16),
+                      label: const FpText('모바일 링크 열기', fontSize: 12, color: Colors.white),
+                      style: ElevatedButton.styleFrom(backgroundColor: FpColor.blue, padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
+                    ),
+                    const SizedBox(height: 8),
+                    SelectableText(
+                      _generateMobileUrl(userProfile),
+                      style: const TextStyle(fontSize: 10, color: Colors.grey),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -425,23 +409,12 @@ class _ActionsSection extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
-              ),
-            ],
+            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 2))],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FpText(
-                '결과 저장하기',
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
+              FpText(l10n.saveResults, fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
               const SizedBox(height: 16),
               Row(
                 children: [
@@ -449,28 +422,15 @@ class _ActionsSection extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       decoration: const BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: FpColor.blue, width: 2),
-                        ),
+                        border: Border(bottom: BorderSide(color: FpColor.blue, width: 2)),
                       ),
-                      child: const FpText(
-                        '이메일',
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: FpColor.blue,
-                        textAlign: TextAlign.center,
-                      ),
+                      child: FpText(l10n.email, fontSize: 14, fontWeight: FontWeight.bold, color: FpColor.blue, textAlign: TextAlign.center),
                     ),
                   ),
                   Expanded(
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: const FpText(
-                        '전화번호',
-                        fontSize: 14,
-                        color: Colors.grey,
-                        textAlign: TextAlign.center,
-                      ),
+                      child: FpText(l10n.phoneNumber, fontSize: 14, color: Colors.grey, textAlign: TextAlign.center),
                     ),
                   ),
                 ],
@@ -478,14 +438,9 @@ class _ActionsSection extends StatelessWidget {
               const SizedBox(height: 16),
               TextField(
                 decoration: InputDecoration(
-                  hintText: '이메일 주소 입력',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 12,
-                  ),
+                  hintText: l10n.enterEmailAddress,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                 ),
               ),
               const SizedBox(height: 16),
@@ -497,16 +452,9 @@ class _ActionsSection extends StatelessWidget {
                     backgroundColor: FpColor.blue,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
-                  child: const FpText(
-                    '결과 보내기',
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                  child: FpText(l10n.sendResults, fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ),
             ],
@@ -516,4 +464,3 @@ class _ActionsSection extends StatelessWidget {
     );
   }
 }
-
