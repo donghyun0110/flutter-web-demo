@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_web_test/l10n/app_localizations.dart';
-import '../models/user_profile.dart';
+import 'package:flutter_web_test/models/user_profile.dart';
 import 'fp_text.dart';
 import 'fp_color.dart';
 

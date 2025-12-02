@@ -34,46 +34,26 @@ class _LanguageSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+    final isMobile = MediaQuery.of(context).size.width < 768;
+
     return Column(
       children: [
         _ProgressIndicator(currentIndex: 0),
-        const SizedBox(height: 40),
-        FpText(
-          l10n.selectLanguage,
-          fontSize: 28,
-          fontWeight: FontWeight.bold,
-          color: Colors.black87,
-        ),
-        const SizedBox(height: 40),
+        SizedBox(height: isMobile ? 24 : 40),
+        FpText(l10n.selectLanguage, fontSize: isMobile ? 24 : 28, fontWeight: FontWeight.bold, color: Colors.black87),
+        SizedBox(height: isMobile ? 24 : 40),
         Expanded(
           child: GridView.count(
             crossAxisCount: 2,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
-            padding: const EdgeInsets.all(24),
-            childAspectRatio: 1.5,
+            mainAxisSpacing: isMobile ? 12 : 16,
+            crossAxisSpacing: isMobile ? 12 : 16,
+            padding: EdgeInsets.all(isMobile ? 16 : 24),
+            childAspectRatio: isMobile ? 1.3 : 1.5,
             children: [
-              _LanguageButton(
-                language: Language.korean,
-                color: FpColor.green,
-                flag: '🇰🇷',
-              ),
-              _LanguageButton(
-                language: Language.english,
-                color: FpColor.blue,
-                flag: '🇺🇸',
-              ),
-              _LanguageButton(
-                language: Language.japanese,
-                color: FpColor.red,
-                flag: '🇯🇵',
-              ),
-              _LanguageButton(
-                language: Language.chinese,
-                color: FpColor.yellow,
-                flag: '🇨🇳',
-              ),
+              _LanguageButton(language: Language.korean, color: FpColor.green, flag: '🇰🇷', isMobile: isMobile),
+              _LanguageButton(language: Language.english, color: FpColor.blue, flag: '🇺🇸', isMobile: isMobile),
+              _LanguageButton(language: Language.japanese, color: FpColor.red, flag: '🇯🇵', isMobile: isMobile),
+              _LanguageButton(language: Language.chinese, color: FpColor.yellow, flag: '🇨🇳', isMobile: isMobile),
             ],
           ),
         ),
@@ -86,12 +66,9 @@ class _LanguageButton extends StatelessWidget {
   final Language language;
   final Color color;
   final String flag;
+  final bool isMobile;
 
-  const _LanguageButton({
-    required this.language,
-    required this.color,
-    required this.flag,
-  });
+  const _LanguageButton({required this.language, required this.color, required this.flag, required this.isMobile});
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +88,7 @@ class _LanguageButton extends StatelessWidget {
         label = l10n.languageChinese;
         break;
     }
-    
+
     return ElevatedButton(
       onPressed: () {
         context.read<AppBloc>().add(LanguageSelected(language));
@@ -119,21 +96,17 @@ class _LanguageButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 2,
+        padding: EdgeInsets.symmetric(vertical: isMobile ? 16 : 20),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FpText(flag, fontSize: 24),
-          const SizedBox(width: 8),
-          FpText(
-            label,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+          FpText(flag, fontSize: isMobile ? 20 : 24),
+          SizedBox(width: isMobile ? 6 : 8),
+          Flexible(
+            child: FpText(label, fontSize: isMobile ? 16 : 18, fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ],
       ),
@@ -145,28 +118,33 @@ class _GenderSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+    final isMobile = MediaQuery.of(context).size.width < 768;
+
     return Column(
       children: [
         _ProgressIndicator(currentIndex: 1),
-        const SizedBox(height: 40),
-        FpText(
-          l10n.selectGender,
-          fontSize: 28,
-          fontWeight: FontWeight.bold,
-          color: Colors.black87,
-        ),
-        const SizedBox(height: 40),
+        SizedBox(height: isMobile ? 24 : 40),
+        FpText(l10n.selectGender, fontSize: isMobile ? 24 : 28, fontWeight: FontWeight.bold, color: Colors.black87),
+        SizedBox(height: isMobile ? 24 : 40),
         Expanded(
           child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _GenderButton(gender: Gender.female),
-                const SizedBox(width: 24),
-                _GenderButton(gender: Gender.male),
-              ],
-            ),
+            child: isMobile
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _GenderButton(gender: Gender.female, isMobile: isMobile),
+                      const SizedBox(height: 16),
+                      _GenderButton(gender: Gender.male, isMobile: isMobile),
+                    ],
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _GenderButton(gender: Gender.female, isMobile: isMobile),
+                      const SizedBox(width: 24),
+                      _GenderButton(gender: Gender.male, isMobile: isMobile),
+                    ],
+                  ),
           ),
         ),
       ],
@@ -176,17 +154,18 @@ class _GenderSelection extends StatelessWidget {
 
 class _GenderButton extends StatelessWidget {
   final Gender gender;
+  final bool isMobile;
 
-  const _GenderButton({required this.gender});
+  const _GenderButton({required this.gender, required this.isMobile});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final label = gender == Gender.male ? l10n.genderMale : l10n.genderFemale;
-    
+
     return SizedBox(
-      width: 200,
-      height: 120,
+      width: isMobile ? double.infinity : 200,
+      height: isMobile ? 80 : 120,
       child: ElevatedButton(
         onPressed: () {
           context.read<AppBloc>().add(GenderSelected(gender));
@@ -194,17 +173,10 @@ class _GenderButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: FpColor.green,
           foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           elevation: 2,
         ),
-        child: FpText(
-          label,
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
+        child: FpText(label, fontSize: isMobile ? 20 : 24, fontWeight: FontWeight.bold, color: Colors.white),
       ),
     );
   }
@@ -214,31 +186,27 @@ class _AgeSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+    final isMobile = MediaQuery.of(context).size.width < 768;
+
     return Column(
       children: [
         _ProgressIndicator(currentIndex: 2),
-        const SizedBox(height: 40),
-        FpText(
-          l10n.selectAge,
-          fontSize: 28,
-          fontWeight: FontWeight.bold,
-          color: Colors.black87,
-        ),
-        const SizedBox(height: 40),
+        SizedBox(height: isMobile ? 24 : 40),
+        FpText(l10n.selectAge, fontSize: isMobile ? 24 : 28, fontWeight: FontWeight.bold, color: Colors.black87),
+        SizedBox(height: isMobile ? 24 : 40),
         Expanded(
           child: GridView.count(
-            crossAxisCount: 3,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
-            padding: const EdgeInsets.all(24),
-            childAspectRatio: 1.2,
+            crossAxisCount: isMobile ? 2 : 3,
+            mainAxisSpacing: isMobile ? 12 : 16,
+            crossAxisSpacing: isMobile ? 12 : 16,
+            padding: EdgeInsets.all(isMobile ? 16 : 24),
+            childAspectRatio: isMobile ? 1.1 : 1.2,
             children: [
-              _AgeButton(ageGroup: AgeGroup.teens),
-              _AgeButton(ageGroup: AgeGroup.twenties),
-              _AgeButton(ageGroup: AgeGroup.thirties),
-              _AgeButton(ageGroup: AgeGroup.forties),
-              _AgeButton(ageGroup: AgeGroup.fiftiesPlus),
+              _AgeButton(ageGroup: AgeGroup.teens, isMobile: isMobile),
+              _AgeButton(ageGroup: AgeGroup.twenties, isMobile: isMobile),
+              _AgeButton(ageGroup: AgeGroup.thirties, isMobile: isMobile),
+              _AgeButton(ageGroup: AgeGroup.forties, isMobile: isMobile),
+              _AgeButton(ageGroup: AgeGroup.fiftiesPlus, isMobile: isMobile),
             ],
           ),
         ),
@@ -249,8 +217,9 @@ class _AgeSelection extends StatelessWidget {
 
 class _AgeButton extends StatelessWidget {
   final AgeGroup ageGroup;
+  final bool isMobile;
 
-  const _AgeButton({required this.ageGroup});
+  const _AgeButton({required this.ageGroup, required this.isMobile});
 
   @override
   Widget build(BuildContext context) {
@@ -273,7 +242,7 @@ class _AgeButton extends StatelessWidget {
         label = l10n.ageFiftiesPlus;
         break;
     }
-    
+
     return ElevatedButton(
       onPressed: () {
         context.read<AppBloc>().add(AgeSelected(ageGroup));
@@ -281,17 +250,11 @@ class _AgeButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: FpColor.green,
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 2,
+        padding: EdgeInsets.symmetric(vertical: isMobile ? 16 : 20),
       ),
-      child: FpText(
-        label,
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-        color: Colors.white,
-      ),
+      child: FpText(label, fontSize: isMobile ? 16 : 18, fontWeight: FontWeight.bold, color: Colors.white),
     );
   }
 }
@@ -300,32 +263,28 @@ class _ConcernSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+    final isMobile = MediaQuery.of(context).size.width < 768;
+
     return Column(
       children: [
         _ProgressIndicator(currentIndex: 3),
-        const SizedBox(height: 40),
-        FpText(
-          l10n.selectConcern,
-          fontSize: 28,
-          fontWeight: FontWeight.bold,
-          color: Colors.black87,
-        ),
-        const SizedBox(height: 40),
+        SizedBox(height: isMobile ? 24 : 40),
+        FpText(l10n.selectConcern, fontSize: isMobile ? 24 : 28, fontWeight: FontWeight.bold, color: Colors.black87),
+        SizedBox(height: isMobile ? 24 : 40),
         Expanded(
           child: GridView.count(
-            crossAxisCount: 3,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
-            padding: const EdgeInsets.all(24),
-            childAspectRatio: 1.2,
+            crossAxisCount: isMobile ? 2 : 3,
+            mainAxisSpacing: isMobile ? 12 : 16,
+            crossAxisSpacing: isMobile ? 12 : 16,
+            padding: EdgeInsets.all(isMobile ? 16 : 24),
+            childAspectRatio: isMobile ? 1.1 : 1.2,
             children: [
-              _ConcernButton(concern: Concern.immune),
-              _ConcernButton(concern: Concern.digestive),
-              _ConcernButton(concern: Concern.joint),
-              _ConcernButton(concern: Concern.skin),
-              _ConcernButton(concern: Concern.eye),
-              _ConcernButton(concern: Concern.energy),
+              _ConcernButton(concern: Concern.immune, isMobile: isMobile),
+              _ConcernButton(concern: Concern.digestive, isMobile: isMobile),
+              _ConcernButton(concern: Concern.joint, isMobile: isMobile),
+              _ConcernButton(concern: Concern.skin, isMobile: isMobile),
+              _ConcernButton(concern: Concern.eye, isMobile: isMobile),
+              _ConcernButton(concern: Concern.energy, isMobile: isMobile),
             ],
           ),
         ),
@@ -336,8 +295,9 @@ class _ConcernSelection extends StatelessWidget {
 
 class _ConcernButton extends StatelessWidget {
   final Concern concern;
+  final bool isMobile;
 
-  const _ConcernButton({required this.concern});
+  const _ConcernButton({required this.concern, required this.isMobile});
 
   @override
   Widget build(BuildContext context) {
@@ -363,7 +323,7 @@ class _ConcernButton extends StatelessWidget {
         label = l10n.concernEnergy;
         break;
     }
-    
+
     return ElevatedButton(
       onPressed: () {
         context.read<AppBloc>().add(ConcernSelected(concern));
@@ -371,17 +331,11 @@ class _ConcernButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: FpColor.green,
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 2,
+        padding: EdgeInsets.symmetric(vertical: isMobile ? 16 : 20),
       ),
-      child: FpText(
-        label,
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-        color: Colors.white,
-      ),
+      child: FpText(label, fontSize: isMobile ? 16 : 18, fontWeight: FontWeight.bold, color: Colors.white),
     );
   }
 }
@@ -393,20 +347,16 @@ class _ProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 768;
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: EdgeInsets.all(isMobile ? 16.0 : 24.0),
       child: Row(
         children: List.generate(4, (index) {
           return Expanded(
             child: Container(
               height: 4,
-              margin: EdgeInsets.only(right: index < 3 ? 8 : 0),
-              decoration: BoxDecoration(
-                color: index <= currentIndex
-                    ? FpColor.green
-                    : FpColor.lightGray,
-                borderRadius: BorderRadius.circular(2),
-              ),
+              margin: EdgeInsets.only(right: index < 3 ? (isMobile ? 6 : 8) : 0),
+              decoration: BoxDecoration(color: index <= currentIndex ? FpColor.green : FpColor.lightGray, borderRadius: BorderRadius.circular(2)),
             ),
           );
         }),
@@ -414,4 +364,3 @@ class _ProgressIndicator extends StatelessWidget {
     );
   }
 }
-
